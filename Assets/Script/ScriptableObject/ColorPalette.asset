@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 491331d356fce254d8e736f84d9c9037, type: 3}
-  m_Name: Player
+  m_Script: {fileID: 11500000, guid: f71dac706840e14488c202ab21b8088a, type: 3}
+  m_Name: ColorPalette
   m_EditorClassIdentifier: 
-  _colorType: 9
-  _hp: 10
-  _atk: 10
-  _def: 10
-  _speed: 0.03
-  _jumpRange: 1
+  _colorList:
+  - _colorAttribute: 0
+    _color: {r: 1, g: 0, b: 0, a: 1}
