@@ -1,15 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using ColorAttributes;
+using UnityEngine.PlayerLoop;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IColorChange
 {
-    [SerializeField] ColorAttributeAndStatus _CAAS;
+    [SerializeField] ColorAttributeAndStatus _colorAttribute;
     [SerializeField] GameObject _attackFieldUP;
     [SerializeField] GameObject _attackFieldDOWN;
     [SerializeField] GameObject _attackFieldRight;
     [SerializeField] GameObject _attackFieldLeft;
     [SerializeField] float _attackInterval = 0.5f;
+    [SerializeField] float _attackEffectiveTime = 0.1f;
 
     Rigidbody2D _rb2d;
     GameObject _attackField;
@@ -63,7 +66,7 @@ public class PlayerController : MonoBehaviour
             //_animator.SetBool("", true);
         }
 
-        transform.position += new Vector3(_moveX, _moveY) * _CAAS.SPEED;
+        transform.position += new Vector3(_moveX, _moveY) * _colorAttribute.SPEED;
 
         if (Input.GetMouseButtonDown(0) && !_isAttacking)
         {
@@ -73,10 +76,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void FixedUpdate()
+    {
+        _rb2d.linearVelocity = Vector3.zero;
+    }
+
     IEnumerator AttackCoroutine(GameObject obj)
     {
         _delta = 0;
         obj.SetActive(true);
+        yield return new WaitForSeconds(_attackEffectiveTime);
+        obj.SetActive(false);
         while (true)
         {
             _delta += Time.deltaTime;
@@ -84,10 +94,14 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("AttackEnd");
                 _isAttacking = false;
-                obj.SetActive(false);
                 yield break;
             }
             yield return null;
         }
+    }
+
+    public void ExtractColor(ColorAttribute color)
+    {
+
     }
 }
