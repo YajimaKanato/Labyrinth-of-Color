@@ -1,7 +1,9 @@
+using ColorAttributes;
 using System.Collections;
 using UnityEngine;
-using ColorAttributes;
-using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
+using Warp;
+using static UnityEngine.Rendering.GPUSort;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour, IColorChange
@@ -18,6 +20,9 @@ public class PlayerController : MonoBehaviour, IColorChange
     GameObject _attackField;
     Animator _animator;
 
+    int _areaIndexX;
+    int _areaIndexY;
+    int _areaIndexZ;
     float _moveX, _moveY;
     float _currentHP;
     float _currentATK;
@@ -36,6 +41,7 @@ public class PlayerController : MonoBehaviour, IColorChange
         _rb2d.gravityScale = 0;
         _animator = GetComponent<Animator>();
         _attackField = _attackFieldRight;
+        SetCurrentArea();
     }
 
     // Update is called once per frame
@@ -103,5 +109,89 @@ public class PlayerController : MonoBehaviour, IColorChange
     public void ExtractColor(ColorAttribute color)
     {
 
+    }
+
+    void SetCurrentArea()
+    {
+        var createLabyrinth = FindFirstObjectByType<CreateLabyrinth>();
+        _areaIndexX = createLabyrinth.StartIndexX * 2 + 1;
+        _areaIndexY = createLabyrinth.StartIndexY * 2 + 1;
+        _areaIndexZ = createLabyrinth.StartIndexZ * 2 + 1;
+    }
+
+    void Warp(WarpStart warpS)
+    {
+        var createLabyrinth = FindFirstObjectByType<CreateLabyrinth>();
+        switch (warpS.Warp)
+        {
+            case WarpAttribute.R:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX + 2, _areaIndexY, _areaIndexZ)].SetActive(true);
+                _areaIndexX += 2;
+                break;
+            case WarpAttribute.L:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX - 2, _areaIndexY, _areaIndexZ)].SetActive(true);
+                _areaIndexX -= 2;
+                break;
+            case WarpAttribute.U:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY + 2, _areaIndexZ)].SetActive(true);
+                _areaIndexY += 2;
+                break;
+            case WarpAttribute.D:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY - 2, _areaIndexZ)].SetActive(true);
+                _areaIndexY -= 2;
+                break;
+            case WarpAttribute.US:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ - 2)].SetActive(true);
+                _areaIndexZ -= 2;
+                break;
+            case WarpAttribute.DS:
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ)].SetActive(false);
+                createLabyrinth.AreaDic[(_areaIndexX, _areaIndexY, _areaIndexZ + 2)].SetActive(true);
+                _areaIndexZ += 2;
+                break;
+            default:
+                break;
+        }
+
+        var warpE = GameObject.FindGameObjectsWithTag("Warp");
+        foreach (var warp in warpE)
+        {
+            if (warpS.Warp == warp.GetComponent<WarpEnd>().Warp)
+            {
+                //StartCoroutine(WarpCoroutine(warp.transform.position));
+                transform.position = warp.transform.position;
+                break;
+            }
+        }
+    }
+
+    IEnumerator WarpCoroutine(Vector3 pos)
+    {
+        yield return new WaitForSeconds(0.3f);
+        transform.position = pos;
+        yield break;
+    }
+
+    IEnumerator WarpWait(WarpStart warpS)
+    {
+        yield return new WaitForSeconds(1.0f);
+        Warp(warpS);
+        yield break;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        var warpS = collision.gameObject.GetComponent<WarpStart>();
+        if (warpS)
+        {
+            Debug.Log("b");
+            Warp(warpS);
+            //StartCoroutine(WarpWait(warpS));
+        }
     }
 }
