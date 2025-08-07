@@ -8,6 +8,10 @@ public class CreateLabyrinth : MonoBehaviour
     [SerializeField, Tooltip("階層数")] int _labyrinthSizeZ = 5;
 
     int[,,] _roomID;
+    /// <summary>
+    /// 0が壁
+    /// </summary>
+    public int[,,] RoomID { get { return _roomID; } }
 
     //プレイヤーがアクションを行うところを「部屋」とする
 

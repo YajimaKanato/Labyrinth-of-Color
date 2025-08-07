@@ -101,9 +101,9 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
     {
         foreach (var color in _colorPalette.ColorList)
         {
-            if (_colorAttribute.ColorType == color._colorAttribute)
+            if (_colorAttribute.ColorType == color.ColorAttribute)
             {
-                gameObject.GetComponent<SpriteRenderer>().color = color._color;
+                gameObject.GetComponent<SpriteRenderer>().color = color.Color;
                 break;
             }
         }
