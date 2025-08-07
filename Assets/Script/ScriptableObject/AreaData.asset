@@ -12,14 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec582ec04548fe642b75b5fd8c5682c4, type: 3}
   m_Name: AreaData
   m_EditorClassIdentifier: 
-  _areaDatas:
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
-  - {fileID: 4690815998086641467, guid: 41262595b5aba5f429d7342c206a75ea, type: 3}
+  _areaDatas: []
