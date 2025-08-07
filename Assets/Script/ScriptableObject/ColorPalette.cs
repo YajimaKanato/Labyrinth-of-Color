@@ -1,6 +1,7 @@
 using UnityEngine;
 using ColorAttributes;
 using System.Collections.Generic;
+using TMPro;
 
 [CreateAssetMenu(fileName = "ColorPalette", menuName = "Scriptable Objects/ColorPalette")]
 public class ColorPalette : ScriptableObject
@@ -12,7 +13,10 @@ public class ColorPalette : ScriptableObject
     [System.Serializable]
     public class ColorData
     {
-        public ColorAttribute _colorAttribute;
-        public Color _color;
+        [SerializeField] ColorAttribute _colorAttribute;
+        [SerializeField] Color _color;
+
+        public ColorAttribute ColorAttribute { get { return _colorAttribute; } }
+        public Color Color { get { return _color; } }
     }
 }
