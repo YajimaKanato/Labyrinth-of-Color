@@ -19,6 +19,16 @@ public class CreateLabyrinth : MonoBehaviour
     {
         //âΩÇÊÇËÇ‡ç≈èâÇ…ñ¿ã{ê∂ê¨
         LabyrinthCreate();
+        for (int i = 0; i < _roomID.GetLength(0); i++)
+        {
+            for (int j = 0; j < _roomID.GetLength(1); j++)
+            {
+                for (int k = 0; k < _roomID.GetLength(2); k++)
+                {
+                    Debug.Log(_roomID[i, j, k]);
+                }
+            }
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -251,21 +261,6 @@ public class CreateLabyrinth : MonoBehaviour
                     face[rand2] = 0;
                 }
             } while (change == 6);
-        }
-
-        for (int n = 0; n < zlen; n++)
-        {//ÉLÉÖÅ[ÉuÇ…î‘çÜÇìñÇƒÇƒÇ¢ÇÈ
-            for (int m = 0; m < ylen; m++)
-            {
-                for (int l = 0; l < xlen; l++)
-                {
-                    if (_roomID[l, m, n] == 0)
-                    {
-                        //GameObject block = Instantiate(_blockPrefab);
-                        //block.transform.position = new Vector3(l, m, n);
-                    }
-                }
-            }
         }
     }
 }

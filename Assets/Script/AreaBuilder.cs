@@ -24,63 +24,78 @@ public class AreaData
 public class AreaBuilder : MonoBehaviour
 {
     [SerializeField] CreateLabyrinth _createLabyrinth;
-    [SerializeField] List<AreaData> _areaPrefab;
+    [SerializeField] List<AreaData> _areaDatas;
     [SerializeField] int _areaIndexX;
     [SerializeField] int _areaIndexY;
     [SerializeField] int _areaIndexZ;
 
     AreaData _areaData;
 
+    int _areaIndexXTune;
+    int _areaIndexYTune;
+    int _areaIndexZTune;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        int randIndex = Random.Range(0, _areaPrefab.Count);
-        _areaData = _areaPrefab[randIndex];
-        WallSet();
+        int randIndex = Random.Range(0, _areaDatas.Count);
+        _areaData = _areaDatas[randIndex];
+        _areaIndexXTune = _areaIndexX * 2 + 1;
+        _areaIndexYTune = _areaIndexY * 2 + 1;
+        _areaIndexZTune = _areaIndexZ * 2 + 1;
+        if (_createLabyrinth)
+        {
+            Instantiate(_areaData.AreaPrefab, transform.position, Quaternion.identity);
+            WallSet();
+        }
+        else
+        {
+            Debug.LogWarning("CreateLabyrinthÇ™ê›íËÇ≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ");
+        }
     }
 
     void WallSet()
     {
-        if (_areaIndexX != _createLabyrinth.RoomID.GetLength(0))
+        if (_areaIndexXTune != _createLabyrinth.RoomID.GetLength(0) - 2)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX + 1, _areaIndexY, _areaIndexZ] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune + 1, _areaIndexYTune, _areaIndexZTune] == 0)
             {
                 _areaData.RightWallPrefab.SetActive(true);
             }
         }
-        if (_areaIndexX != 0)
+        if (_areaIndexXTune != 1)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX - 1, _areaIndexY, _areaIndexZ] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune - 1, _areaIndexYTune, _areaIndexZTune] == 0)
             {
                 _areaData.LeftWallPrefab.SetActive(true);
             }
         }
-        if (_areaIndexY != _createLabyrinth.RoomID.GetLength(1))
+        if (_areaIndexYTune != _createLabyrinth.RoomID.GetLength(1) - 2)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX, _areaIndexY + 1, _areaIndexZ] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune, _areaIndexYTune + 1, _areaIndexZTune] == 0)
             {
                 _areaData.UpWallPrefab.SetActive(true);
             }
         }
-        if (_areaIndexY != 0)
+        if (_areaIndexYTune != 1)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX, _areaIndexY - 1, _areaIndexZ] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune, _areaIndexYTune - 1, _areaIndexZTune] == 0)
             {
                 _areaData.DownWallPrefab.SetActive(true);
             }
         }
-        if (_areaIndexZ != _createLabyrinth.RoomID.GetLength(2))
+        if (_areaIndexZTune != _createLabyrinth.RoomID.GetLength(2) - 2)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX, _areaIndexY, _areaIndexZ + 1] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune, _areaIndexYTune, _areaIndexZTune + 1] == 0)
             {
-                _areaData.DownStairsPrefab.SetActive(true);
+                _areaData.DownStairsPrefab.SetActive(false);
             }
         }
-        if (_areaIndexZ != 0)
+        if (_areaIndexZ != 1)
         {
-            if (_createLabyrinth.RoomID[_areaIndexX, _areaIndexY, _areaIndexZ - 1] == 0)
+            if (_createLabyrinth.RoomID[_areaIndexXTune, _areaIndexYTune, _areaIndexZTune - 1] == 0)
             {
-                _areaData.UpStairsPrefab.SetActive(true);
+                _areaData.UpStairsPrefab.SetActive(false);
             }
         }
     }
