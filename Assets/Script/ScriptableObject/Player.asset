@@ -16,5 +16,5 @@ MonoBehaviour:
   _hp: 10
   _atk: 10
   _def: 10
-  _speed: 0.03
+  _speed: 0.01
   _jumpRange: 1
