@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CreateLabyrinth : MonoBehaviour
@@ -6,6 +7,13 @@ public class CreateLabyrinth : MonoBehaviour
     [SerializeField, Tooltip("横方向のサイズ")] int _labyrinthSizeX = 5;
     [SerializeField, Tooltip("上方向のサイズ")] int _labyrinthSizeY = 5;
     [SerializeField, Tooltip("階層数")] int _labyrinthSizeZ = 5;
+    [SerializeField] int _startIndexX = 0;
+    [SerializeField] int _startIndexY = 0;
+    [SerializeField] int _startIndexZ = 0;
+
+    public int StartIndexX { get { return _startIndexX; } }
+    public int StartIndexY { get { return _startIndexY; } }
+    public int StartIndexZ { get { return _startIndexZ; } }
 
     int[,,] _roomID;
     /// <summary>
@@ -13,22 +21,15 @@ public class CreateLabyrinth : MonoBehaviour
     /// </summary>
     public int[,,] RoomID { get { return _roomID; } }
 
+    Dictionary<(int, int, int), GameObject> _areaDic = new Dictionary<(int, int, int), GameObject>();
+    public Dictionary<(int, int, int), GameObject> AreaDic { get { return _areaDic; } set { } }
+
     //プレイヤーがアクションを行うところを「部屋」とする
 
     private void Awake()
     {
         //何よりも最初に迷宮生成
         LabyrinthCreate();
-        for (int i = 0; i < _roomID.GetLength(0); i++)
-        {
-            for (int j = 0; j < _roomID.GetLength(1); j++)
-            {
-                for (int k = 0; k < _roomID.GetLength(2); k++)
-                {
-                    Debug.Log(_roomID[i, j, k]);
-                }
-            }
-        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

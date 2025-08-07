@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -16,6 +17,10 @@ public class AreaBuilder : MonoBehaviour
     int _areaIndexXTune;
     int _areaIndexYTune;
     int _areaIndexZTune;
+
+    public int AreaIndexX { get { return _areaIndexXTune; } }
+    public int AreaIndexY { get { return _areaIndexYTune; } }
+    public int AreaIndexZ { get { return _areaIndexZTune; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,9 +48,19 @@ public class AreaBuilder : MonoBehaviour
             if (_areaData)
             {
                 var go = Instantiate(_areaData, transform.position, Quaternion.identity);
+                _createLabyrinth.AreaDic[(_areaIndexXTune, _areaIndexYTune, _areaIndexZTune)] = go;
                 if (go)
                 {
+                    go.transform.parent = transform;
                     go.GetComponent<WallSetting>()?.SetIndex(_areaIndexX, _areaIndexY, _areaIndexZ);
+                    if (_createLabyrinth.StartIndexX == _areaIndexX && _createLabyrinth.StartIndexY == _areaIndexY && _createLabyrinth.StartIndexZ == _areaIndexZ)
+                    {
+                        go.SetActive(true);
+                    }
+                    else
+                    {
+                        StartCoroutine(Wait(go));
+                    }
                 }
             }
         }
@@ -53,5 +68,13 @@ public class AreaBuilder : MonoBehaviour
         {
             Debug.LogWarning("CreateLabyrinthÇ™ê›íËÇ≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ");
         }
+    }
+
+    IEnumerator Wait(GameObject go)
+    {
+        go.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        go.SetActive(false);
+        yield break;
     }
 }
