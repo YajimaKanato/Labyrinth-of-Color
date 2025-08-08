@@ -1,9 +1,7 @@
 using ColorAttributes;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Warp;
-using static UnityEngine.Rendering.GPUSort;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour, IColorChange
@@ -21,6 +19,8 @@ public class PlayerController : MonoBehaviour, IColorChange
     Rigidbody2D _rb2d;
     GameObject _attackField;
     Animator _animator;
+    DamageCalculation _damageCalcu;
+    Coroutine _coroutine;
 
     RaycastHit2D _hit;
     Vector3 _direction;
@@ -35,18 +35,34 @@ public class PlayerController : MonoBehaviour, IColorChange
     float _currentSPEED;
     float _currentJR;
     float _delta;
+    float _knockBackTime = 0.2f;
     bool _isAttacking = false;
+    bool _isKnocking = false;
 
     public float CurrentATK { get { return _currentATK; } }
+    public float CurrentHP { get { return _currentHP; } }
+
+    const float DECELERATION = 0.9f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Setting();
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         _animator = GetComponent<Animator>();
         _attackField = _attackFieldRight;
         SetCurrentArea();
+        _damageCalcu = new DamageCalculation();
+    }
+
+    void Setting()
+    {
+        _currentHP = _colorAttribute.HP;
+        _currentATK = _colorAttribute.ATK;
+        _currentDEF = _colorAttribute.DEF;
+        _currentSPEED = _colorAttribute.SPEED;
+
     }
 
     // Update is called once per frame
@@ -92,11 +108,19 @@ public class PlayerController : MonoBehaviour, IColorChange
         {
             Warp(_hit.collider.gameObject.GetComponent<WarpStart>());
         }
+
+        if (_currentHP <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void FixedUpdate()
     {
-        _rb2d.linearVelocity = new Vector3(_moveX, _moveY) * _colorAttribute.SPEED;
+        if (!_isKnocking)
+        {
+            _rb2d.linearVelocity = new Vector3(_moveX, _moveY) * _colorAttribute.SPEED;
+        }
     }
 
     IEnumerator AttackCoroutine(GameObject obj)
@@ -181,8 +205,37 @@ public class PlayerController : MonoBehaviour, IColorChange
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    IEnumerator KnockBackCoroutine(GameObject enemy)
     {
+        _isKnocking = true;
+        _rb2d.linearVelocity = Vector3.zero;
+        _rb2d.AddForce((transform.position - enemy.transform.position).normalized * 20, ForceMode2D.Impulse);
 
+        _delta = 0;
+        while (true)
+        {
+            _delta += Time.deltaTime;
+            if (_delta >= _knockBackTime)
+            {
+                _isKnocking = false;
+                yield break;
+            }
+            _rb2d.linearVelocity *= DECELERATION;
+            yield return null;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        var enemy = collision.gameObject.GetComponent<EnemyBase>();
+        if (enemy)
+        {
+            if (enemy.IsAttacking)
+            {
+                Debug.Log("<color=red>P</color>:Damage");
+                _coroutine = StartCoroutine(KnockBackCoroutine(enemy.gameObject));
+                _currentHP -= _damageCalcu.Damage(enemy.CurrentATK, _currentDEF);
+            }
+        }
     }
 }
