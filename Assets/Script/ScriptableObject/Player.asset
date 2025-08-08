@@ -12,3 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 491331d356fce254d8e736f84d9c9037, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
+  _colorType: 0
+  _hp: 0
+  _atk: 0
+  _def: 0
+  _speed: 0.05
+  _jumpRange: 0
