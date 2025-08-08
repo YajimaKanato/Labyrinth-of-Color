@@ -130,6 +130,8 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
         {
             StopCoroutine(_coroutine);
         }
+        GameDirector.EnemyCount++;
+        Debug.Log(GameDirector.EnemyCount);
     }
 
     protected abstract void Attack();
