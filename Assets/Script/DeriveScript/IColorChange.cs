@@ -1,4 +1,3 @@
-using System;
 using ColorAttributes;
 
 interface IColorChange
