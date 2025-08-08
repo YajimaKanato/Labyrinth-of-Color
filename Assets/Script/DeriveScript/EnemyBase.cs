@@ -41,7 +41,6 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
         Setting();
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
-        ColorChange();
         _player = GameObject.FindWithTag("Player");
         if (!_player)
         {
@@ -62,7 +61,7 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
         _currentATK = _colorAttribute.ATK;
         _currentDEF = _colorAttribute.DEF;
         _currentSPEED = _colorAttribute.SPEED;
-
+        ColorSetting();
     }
 
     // Update is called once per frame
@@ -135,16 +134,22 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
     }
 
     protected abstract void Attack();
+    protected abstract void ColorSetting();
+    protected abstract void IsColorLess();
 
     public void ExtractColor(ColorAttribute color)
     {
-
+        if (color == _colorAttribute.ColorType)
+        {
+            IsColorLess();
+        }
+        ColorSetting();
     }
 
     /// <summary>
     /// êFÇïœÇ¶ÇÈä÷êî
     /// </summary>
-    void ColorChange()
+    protected void ColorChange()
     {
         foreach (var color in _colorPalette.ColorList)
         {
