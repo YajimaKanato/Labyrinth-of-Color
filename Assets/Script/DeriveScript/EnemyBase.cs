@@ -123,7 +123,7 @@ public abstract class EnemyBase : MonoBehaviour, IColorChange
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (_coroutine != null)
         {
