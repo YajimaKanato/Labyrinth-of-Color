@@ -12,6 +12,5 @@ public class WarpEnd : MonoBehaviour
         {
             this.tag = "Warp";
         }
-        Debug.Log("a");
     }
 }
