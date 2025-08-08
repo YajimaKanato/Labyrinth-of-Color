@@ -14,6 +14,10 @@ public class WarpStart : MonoBehaviour
     private void Awake()
     {
         _cc2d = GetComponent<CircleCollider2D>();
+        if (this.gameObject.layer != LayerMask.NameToLayer("Warp"))
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Warp");
+        }
     }
 
     private void OnEnable()
