@@ -15,10 +15,15 @@ public class PlayerController : MonoBehaviour, IColorChange
     [SerializeField] GameObject _attackFieldLeft;
     [SerializeField] float _attackInterval = 0.5f;
     [SerializeField] float _attackEffectiveTime = 0.1f;
+    [SerializeField] LayerMask _wallHitLayer;
+    [SerializeField] LayerMask _warpLayer;
 
     Rigidbody2D _rb2d;
     GameObject _attackField;
     Animator _animator;
+
+    RaycastHit2D _hit;
+    Vector3 _direction;
 
     int _areaIndexX;
     int _areaIndexY;
@@ -72,7 +77,7 @@ public class PlayerController : MonoBehaviour, IColorChange
             //_animator.SetBool("", true);
         }
 
-        transform.position += new Vector3(_moveX, _moveY) * _colorAttribute.SPEED;
+        _direction = new Vector3(_moveX, _moveY);
 
         if (Input.GetMouseButtonDown(0) && !_isAttacking)
         {
@@ -80,11 +85,18 @@ public class PlayerController : MonoBehaviour, IColorChange
             _isAttacking = true;
             StartCoroutine(AttackCoroutine(_attackField));
         }
+
+        Debug.DrawLine(transform.position, transform.position + _direction * 0.5f);
+        _hit = Physics2D.Linecast(transform.position, transform.position + _direction * 0.5f, _warpLayer);
+        if (_hit)
+        {
+            Warp(_hit.collider.gameObject.GetComponent<WarpStart>());
+        }
     }
 
     void FixedUpdate()
     {
-        _rb2d.linearVelocity = Vector3.zero;
+        _rb2d.linearVelocity = new Vector3(_moveX, _moveY) * _colorAttribute.SPEED;
     }
 
     IEnumerator AttackCoroutine(GameObject obj)
@@ -163,35 +175,14 @@ public class PlayerController : MonoBehaviour, IColorChange
         {
             if (warpS.Warp == warp.GetComponent<WarpEnd>().Warp)
             {
-                //StartCoroutine(WarpCoroutine(warp.transform.position));
                 transform.position = warp.transform.position;
                 break;
             }
         }
     }
 
-    IEnumerator WarpCoroutine(Vector3 pos)
-    {
-        yield return new WaitForSeconds(0.3f);
-        transform.position = pos;
-        yield break;
-    }
-
-    IEnumerator WarpWait(WarpStart warpS)
-    {
-        yield return new WaitForSeconds(1.0f);
-        Warp(warpS);
-        yield break;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var warpS = collision.gameObject.GetComponent<WarpStart>();
-        if (warpS)
-        {
-            Debug.Log("b");
-            Warp(warpS);
-            //StartCoroutine(WarpWait(warpS));
-        }
+
     }
 }
