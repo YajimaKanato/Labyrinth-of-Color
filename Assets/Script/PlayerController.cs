@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour, IColorChange
 
     public void ExtractColor(ColorAttribute color)
     {
-
+        _currentATK += 5;
     }
 
     void SetCurrentArea()
