@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour, IColorChange
     [SerializeField] GameObject _attackFieldLeft;
     [SerializeField] float _attackInterval = 0.5f;
     [SerializeField] float _attackEffectiveTime = 0.1f;
-    [SerializeField] LayerMask _wallHitLayer;
+    [SerializeField] LayerMask _colorExtracterLayer;
     [SerializeField] LayerMask _warpLayer;
 
     Rigidbody2D _rb2d;
@@ -22,7 +22,8 @@ public class PlayerController : MonoBehaviour, IColorChange
     DamageCalculation _damageCalcu;
     Coroutine _coroutine;
 
-    RaycastHit2D _hit;
+    RaycastHit2D _enemyHit;
+    RaycastHit2D _colorExtracterHit;
     Vector3 _direction;
 
     int _areaIndexX;
@@ -93,8 +94,6 @@ public class PlayerController : MonoBehaviour, IColorChange
             //_animator.SetBool("", true);
         }
 
-        _direction = new Vector3(_moveX, _moveY);
-
         if (Input.GetMouseButtonDown(0) && !_isAttacking)
         {
             Debug.Log("AttackStart");
@@ -102,16 +101,33 @@ public class PlayerController : MonoBehaviour, IColorChange
             StartCoroutine(AttackCoroutine(_attackField));
         }
 
-        Debug.DrawLine(transform.position, transform.position + _direction * 0.5f);
-        _hit = Physics2D.Linecast(transform.position, transform.position + _direction * 0.5f, _warpLayer);
-        if (_hit)
+        if (_moveX != 0 || _moveY != 0)
         {
-            Warp(_hit.collider.gameObject.GetComponent<WarpStart>());
+            _direction = new Vector3(_moveX, _moveY);
+            Debug.DrawLine(transform.position, transform.position + _direction * 0.6f);
+            _enemyHit = Physics2D.Linecast(transform.position, transform.position + _direction * 0.6f, _warpLayer);
+            Debug.DrawLine(transform.position, transform.position + _direction * 0.6f);
+            _colorExtracterHit = Physics2D.Linecast(transform.position, transform.position + _direction * 0.6f, _colorExtracterLayer);
+        }
+
+        if (_enemyHit)
+        {
+            Warp(_enemyHit.collider.gameObject.GetComponent<WarpStart>());
         }
 
         if (_currentHP <= 0)
         {
             Destroy(gameObject);
+        }
+
+
+        if (_colorExtracterHit)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("a");
+                _colorExtracterHit.collider.GetComponent<ColorExtracter>().ColorChange();
+            }
         }
     }
 

@@ -15,3 +15,7 @@ MonoBehaviour:
   _colorList:
   - _colorAttribute: 0
     _color: {r: 1, g: 0, b: 0, a: 1}
+  - _colorAttribute: 3
+    _color: {r: 0, g: 1, b: 0, a: 1}
+  - _colorAttribute: 5
+    _color: {r: 0, g: 0, b: 1, a: 1}
